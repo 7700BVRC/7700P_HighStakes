@@ -437,13 +437,13 @@ switch(Case)
     Intake.stop();
     wait(10, msec);
     inchDriveP(37);
-
+// cole is sigma
   }
   break;
   case 2:{
   //Scores alliance stake.
   Intake.spin(fwd, 100, pct);
-  Lifter.spin(fwd,50, pct);
+  Lifter.spin(fwd,100, pct);
   wait(1000, msec);
   //Gets mobile goal and scores 3 rings.
   inchDriveP(15.5);
@@ -468,7 +468,7 @@ switch(Case)
   gyroTurn(-100);
   wait(10, msec);
   Intake.spin(fwd, 100, pct);
-  Lifter.spin(fwd, 50, pct);
+  Lifter.spin(fwd, 100, pct);
   inchDriveP(11);
   wait(1500, msec);
   inchDriveP(-4);
