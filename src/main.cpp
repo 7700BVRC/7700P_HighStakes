@@ -43,7 +43,7 @@ float G  = 0.75;
 float D = 3.25;
 float PI = 3.14;
 int toggle = 0; 
-float armPositions[] = {0.0, 10.0, 90.0, 97.0};
+float armPositions[] = {0.0, 15.0, 90.0, 97.0};
 int currentPositionindex = 0;
 float target = 0;
 /*---------------------------------------------------------------------------*/
@@ -415,6 +415,7 @@ switch(Case)
 {
   case 0: {
     Brain.Screen.clearScreen();
+    gyroTurn(90);
   }
   break;
   case 1: {
@@ -437,18 +438,21 @@ switch(Case)
     Intake.stop();
     wait(10, msec);
     inchDriveP(37);
-// cole is sigma
+
   }
   break;
   case 2:{
   //Scores alliance stake.
   Intake.spin(fwd, 100, pct);
   Lifter.spin(fwd,100, pct);
-  wait(1000, msec);
+  wait(400, msec);
+  Intake.stop();
+  Lifter.stop();
+  wait(50, msec);
   //Gets mobile goal and scores 3 rings.
-  inchDriveP(15.5);
+  inchDriveP(16);
   wait(10, msec);
-  gyroTurn(85);
+  gyroTurn(91);
   wait(10, msec);
   clampPush(true);
   wait(10, msec);
@@ -458,23 +462,25 @@ switch(Case)
   wait(10, msec);
   clampPush(false);
   wait(10, msec);
-  gyroTurn(170);
+  gyroTurn(175);
+  Intake.spin(fwd, 100, pct);
+  Lifter.spin(fwd,100, pct);
   wait(10, msec);
-  inchDriveP(38);
+  inchDriveP(29.5);
   wait(1000, msec);
-  inchDriveP(-11);
+  inchDriveP(-8.5);
   Intake.stop();
   wait(10, msec);
-  gyroTurn(-100);
+  gyroTurn(-80);
   wait(10, msec);
   Intake.spin(fwd, 100, pct);
   Lifter.spin(fwd, 100, pct);
   inchDriveP(11);
   wait(1500, msec);
-  inchDriveP(-4);
+  inchDriveP(-5);
   wait(10, msec);
-  gyroTurn(-120);
-  inchDriveP(-12);
+  gyroTurn(-110);
+  inchDriveP(-14);
   wait(100, msec);
   clampPush(true);
   Intake.stop();
@@ -482,7 +488,8 @@ switch(Case)
   wait(10, msec);
   inchDriveP(25);
   wait(10, msec);
-  gyroTurn(-150);
+  gyroTurn(-160);
+  wait(10, msec);
   inchDriveP(-55);
   wait(10, msec);
   inchDriveSlow(-5);
