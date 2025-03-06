@@ -46,6 +46,9 @@ int toggle = 0;
 float armPositions[] = {0.0, 15.0, 90.0, 97.0};
 int currentPositionindex = 0;
 float target = 0;
+int AutonSelected = 2;
+int AutonMin = 0;
+int AutonMax = 1;
 /*---------------------------------------------------------------------------*/
 
 void drive (int rspeed, int lspeed, int wt){                      
@@ -97,6 +100,23 @@ void gyroTurn(float target)
     speed=kp*error;
     drive(-speed, speed, 10);
     heading=Gyro.rotation();
+    error=target-heading;
+  }
+    driveBrake();
+}
+
+void AbsgyroTurn(float target)
+{   
+  float heading=0.0;
+  float accuracy=2.0;
+  float error=target-heading;
+  float kp=0.45;
+  float speed=kp*error;
+  
+  while(fabs(error)>=accuracy){
+    speed=kp*error;
+    drive(-speed, speed, 10);
+    heading=Gyro.rotation(deg);
     error=target-heading;
   }
     driveBrake();
@@ -183,16 +203,16 @@ void inchDriveP(float target){
 void inchDriveSlow(float target){
   float x=0;
   float error=target;
-  float kp=3.0;
-  float speed =kp*error;
+  float kp1=1.5;
+  float speed =kp1*error;
   float accuracy=1.0;
   LF.setPosition(0.0, rev);
 
   while(fabs(error)>accuracy){
-    drive(speed,speed,1);
+    drive(speed,speed,10);
     x=LF.position(rev)*PI*D*G;
     error=target-x;
-    speed=kp*error;
+    speed=kp1*error;
   }
   driveBrake();
 }
@@ -341,7 +361,7 @@ void Drawgui(){
   Brain.Screen.printAt(320, 190, "Eliminations");
 }
 
-int Case = 0;
+int Case = 2;
 int depth = 0;
 void Autonselector(){
   int Xpos = Brain.Screen.xPosition();
@@ -413,12 +433,12 @@ void autonomous(void) {
   
 switch(Case)
 {
-  case 0: {
+  case 0: 
     Brain.Screen.clearScreen();
     gyroTurn(90);
-  }
+  
   break;
-  case 1: {
+  case 1: 
     clampPush(true);
     inchDriveP(-18);
     gyroTurn(35);
@@ -439,10 +459,12 @@ switch(Case)
     wait(10, msec);
     inchDriveP(37);
 
-  }
+  
   break;
-  case 2:{
+  case 2:
   //Scores alliance stake.
+
+
   Intake.spin(fwd, 100, pct);
   Lifter.spin(fwd,100, pct);
   wait(400, msec);
@@ -456,54 +478,54 @@ switch(Case)
   wait(10, msec);
   clampPush(true);
   wait(10, msec);
-  inchDriveSlow(-17.5);
-  wait(10, msec);
-  inchDriveSlow(-2);
-  wait(10, msec);
+  inchDriveP(-15);
+ drive(-10, -10, 350); 
+ driveBrake(); 
   clampPush(false);
-  wait(10, msec);
-  gyroTurn(175);
+
+ gyroTurn(-181);
   Intake.spin(fwd, 100, pct);
   Lifter.spin(fwd,100, pct);
   wait(10, msec);
-  inchDriveP(29.5);
-  wait(1000, msec);
-  inchDriveP(-8.5);
-  Intake.stop();
-  wait(10, msec);
-  gyroTurn(-80);
-  wait(10, msec);
-  Intake.spin(fwd, 100, pct);
-  Lifter.spin(fwd, 100, pct);
-  inchDriveP(11);
-  wait(1500, msec);
-  inchDriveP(-5);
-  wait(10, msec);
-  gyroTurn(-110);
-  inchDriveP(-14);
-  wait(100, msec);
-  clampPush(true);
-  Intake.stop();
-  Lifter.stop();
-  wait(10, msec);
-  inchDriveP(25);
-  wait(10, msec);
-  gyroTurn(-160);
-  wait(10, msec);
-  inchDriveP(-55);
-  wait(10, msec);
-  inchDriveSlow(-5);
-  wait(10, msec);
-  clampPush(false);
-  gyroTurn(170);
-  Intake.spin(fwd, 100, pct);
-  Lifter.spin(fwd, 50, pct);
-  wait(10, msec);
-  inchDriveP(32);
-  wait(1500, msec);
-  gyroTurn(-90);
-  wait(10, msec);
-  inchDriveP(-10);
+  inchDriveP(29);
+  drive(50, 50, 350); 
+ driveBrake(); 
+  // inchDriveP(-8.5);
+  // Intake.stop();
+  // wait(10, msec);
+  // gyroTurn(-80);
+  // wait(10, msec);
+  // Intake.spin(fwd, 100, pct);
+  // Lifter.spin(fwd, 100, pct);
+  // inchDriveP(11);
+  // wait(1500, msec);
+  // inchDriveP(-5);
+  // wait(10, msec);
+  // gyroTurn(-110);
+  // inchDriveP(-14);
+  // wait(100, msec);
+  // clampPush(true);
+  // Intake.stop();
+  // Lifter.stop();
+  // wait(10, msec);
+  // inchDriveP(25);
+  // wait(10, msec);
+  // gyroTurn(-160);
+  // wait(10, msec);
+  // inchDriveP(-55);
+  // wait(10, msec);
+  // inchDriveSlow(-5);
+  // wait(10, msec);
+  // clampPush(false);
+  // gyroTurn(170);
+  // Intake.spin(fwd, 100, pct);
+  // Lifter.spin(fwd, 50, pct);
+  // wait(10, msec);
+  // inchDriveP(32);
+  // wait(1500, msec);
+  // gyroTurn(-90);
+  // wait(10, msec);
+  // inchDriveP(-10);
   /*inchDriveP(-11);
   Intake.stop();
   wait(10, msec);
@@ -521,7 +543,7 @@ switch(Case)
   Lifter.stop();
   wait(10, msec);
   inchDriveP(30);*/
-  }
+  
   break;
 
   case 3:{
