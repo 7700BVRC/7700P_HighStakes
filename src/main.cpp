@@ -71,20 +71,23 @@ void driveBrake () {
 
 }
 
-void olGyroTurn(float target, int speed){
-	float heading20 = 0;
-  Gyro.setRotation(0, degrees);
-
-	while (heading20<=target){
-    heading20=Gyro.rotation(degrees);
-    drive(speed, -speed, 10);
-    wait(10,msec);
-	}
-	
-	driveBrake();
+void gyroTurn(float target)
+{   
+  // float heading=0.0;
+  float error=target-Gyro.rotation();
+  float kp=0.5;
+  float speed=kp*error;
+  
+  while(fabs(error)>=2){
+    speed=kp*error;
+    drive(-speed, speed, 10);
+    // heading=Gyro.rotation();
+    error=target-Gyro.rotation();
+  }
+    driveBrake();
 }
 
-void gyroTurn(float target)
+/*void gyroTurn(float target)
 {   
   float heading=0.0;
   float accuracy=2;
@@ -100,7 +103,7 @@ void gyroTurn(float target)
     error=target-heading;
   }
     driveBrake();
-}
+}*/
 
 void changeTarget(){
 currentPositionindex++;
@@ -163,7 +166,7 @@ float kp=1.5;                                   ;
   
 
 
-void inchDrivePi(float target){
+/*void inchDriveP(float target){
   float x=0;
   float error=target;
   float kp=3.0;
@@ -180,19 +183,19 @@ void inchDrivePi(float target){
   driveBrake();
 
 }
-
+*/
 void inchDriveP(float target) {
   Brain.Screen.printAt(1, 20, "Inch Drive Start");
   float x = 0.0;
   float error = target - x;
   float speed = 40.0;
   float accuracy = 0.2;
-  float ks = 0.10;
+  float ks = 0.0;
   float yaw = 0.0;
   float lspeed = speed * fabs(error) / error - ks * yaw;
   float rspeed = speed * fabs(error) / error + ks * yaw;
   
-  Gyro.setRotation(0.0, deg);
+  
   RB.setPosition(0, rev);
   while (fabs(error) > accuracy) {
   drive(lspeed, rspeed, 10);
@@ -366,7 +369,7 @@ void Drawgui(){
   Brain.Screen.printAt(320, 190, "Eliminations");
 }
 
-int Case = 0;
+int Case = 2;
 int depth = 0;
 void Autonselector(){
   int Xpos = Brain.Screen.xPosition();
@@ -440,9 +443,10 @@ switch(Case)
 {
   case 0: {
     Brain.Screen.clearScreen();
-    gyroTurn(180); 
-    inchDriveP(10); 
-    gyroTurn(90); 
+    gyroTurn(90);
+    wait(1000, msec);  
+    gyroTurn(-90); 
+    gyroTurn(0);
     
   }
   break;
@@ -456,10 +460,10 @@ switch(Case)
     Lifter.spin(fwd, 70, pct);
     Intake.spin(fwd, 100, pct);
     wait(200, msec);
-    gyroTurn(42.5);
+    gyroTurn(75.5);
     inchDriveP(21);
     wait(1500, msec);
-    gyroTurn(-175);
+    gyroTurn(-99.5);
     Lifter.stop();
     Intake.stop();
     wait(10, msec);
@@ -473,27 +477,26 @@ switch(Case)
   Lifter.spin(fwd,100, pct);
   wait(1000, msec);
   //Gets mobile goal and scores 3 rings.
-  inchDriveP(14);
-  wait(10, msec);
-  gyroTurn(85);
+  inchDriveP(8);
+  wait(100, msec);
+  gyroTurn(90);
   wait(10, msec);
   clampPush(true);
   wait(10, msec);
-  inchDriveSlow(-17.5);
+  inchDriveP(-17.5);
   wait(10, msec);
-  inchDriveSlow(-2);
+  inchDriveP(-4);
   wait(10, msec);
   clampPush(false);
   wait(10, msec);
-  gyroTurn(172);
+  gyroTurn(258);
   wait(10, msec);
-  inchDriveP(30);
+  inchDriveP(28);
   wait(500, msec);
-  drive(20, 20, 1000);
-  inchDriveP(-7);
+  drive(2.5, 2.5, 1000);
   Intake.stop();
-  wait(10, msec);
-  gyroTurn(-100);
+  wait(1000, msec);
+  gyroTurn(150);
   wait(10, msec);
   Intake.spin(fwd, 100, pct);
   Lifter.spin(fwd, 100, pct);
@@ -501,7 +504,7 @@ switch(Case)
   wait(500, msec);
   inchDriveP(-4);
   wait(10, msec);
-  gyroTurn(-120);
+  gyroTurn(40);
   wait(1000, msec);
   Intake.stop();
   Lifter.stop();
@@ -511,36 +514,35 @@ switch(Case)
   Intake.stop();
   Lifter.stop();
   wait(10, msec);
-    //first set done
-
-  // inchDriveP(27);
-  // wait(10, msec);
-  // gyroTurn(-153);
-  // inchDriveP(-55);
-  // wait(10, msec);
-  // gyroTurn(-10);
-  // wait(10, msec);
-  // inchDriveSlow(-8.5);
-  // wait(10, msec);
-  // clampPush(false);
-  // gyroTurn(180);
-  // Intake.spin(fwd, 100, pct);
-  // Lifter.spin(fwd, 50, pct);
-  // wait(10, msec);
-  // inchDriveP(20);
-  // wait(100, msec);
-  // drive(20, 20, 1000);
-  // wait(10, msec);
-  // inchDriveP(-10);
-  // Intake.stop();
-  // Lifter.stop();
-  // wait(10, msec);
-  // gyroTurn(-120);
-  // wait(10, msec);
-  // drive(-100, -100, 1000);
-  // wait(10, msec);
-  // clampPush(true);
-  // wait(10, msec);
+   inchDriveP(25);
+   wait(10, msec);
+   gyroTurn(-90);
+   inchDriveP(-55);
+   wait(10, msec);
+   wait(10, msec);
+   inchDriveSlow(-8.5);
+   wait(10, msec);
+   clampPush(false);
+   gyroTurn(90);
+   Intake.spin(fwd, 100, pct);
+   Lifter.spin(fwd, 50, pct);
+   wait(10, msec);
+   inchDriveP(20);
+   wait(100, msec);
+   drive(20, 20, 1000);
+   wait(10, msec);
+   inchDriveP(-10);
+   wait(10, msec);
+   gyroTurn(-60);
+   wait(10, msec);
+   Intake.stop();
+   Lifter.stop();
+   wait(500, msec);
+   drive(-100, -100, 1000);
+   wait(10, msec);
+   clampPush(true);
+   wait(10, msec);
+   inchDriveP(10);
 
   }
   break;   // While ColekindaSigma = true{ Team = Good }
@@ -554,10 +556,10 @@ switch(Case)
     Lifter.spin(fwd, 70, pct);
     Intake.spin(fwd, 100, pct);
     wait(200, msec);
-    gyroTurn(-47);
+    gyroTurn(-84.5);
     inchDriveP(20);
     wait(1000, msec);
-    gyroTurn(181.5);
+    gyroTurn(97);
     Lifter.stop();
     Intake.stop();
     wait(10, msec);
@@ -566,42 +568,42 @@ switch(Case)
 break;
 case 4:{
 clampPush(true);
-  inchDriveP(-18);
-  gyroTurn(30);
-  inchDriveP(-18);
-  clampPush(false);
-  wait(1000, msec);
-  Lifter.spin(fwd, 70, pct);
-  Intake.spin(fwd, 100, pct);
-  wait(200, msec);
-  gyroTurn(50);
-  inchDriveP(20);
-  wait(1000, msec);
-  gyroTurn(-165);
-  Lifter.stop();
-  Intake.stop();
-  wait(10, msec);
-  inchDriveP(37);
+    inchDriveP(-18);
+    gyroTurn(33);
+    inchDriveSlow(-14);
+    clampPush(false);
+    wait(100, msec);
+    Lifter.spin(fwd, 70, pct);
+    Intake.spin(fwd, 100, pct);
+    wait(200, msec);
+    gyroTurn(75.5);
+    inchDriveP(21);
+    wait(1500, msec);
+    gyroTurn(-99.5);
+    Lifter.stop();
+    Intake.stop();
+    wait(10, msec);
+    inchDriveP(37);
 }
 break;
 case 5:{
 clampPush(true);
-  inchDriveP(-18);
-  gyroTurn(-45);
-  inchDriveP(-17);
-  clampPush(false);
-  wait(1000, msec);
-  Lifter.spin(fwd, 70, pct);
-  Intake.spin(fwd, 100, pct);
-  wait(200, msec);
-  gyroTurn(-55);
-  inchDriveP(20);
-  wait(1000, msec);
-  gyroTurn(170);
-  Lifter.stop();
-  Intake.stop();
-  wait(10, msec);
-  inchDriveP(37);
+    inchDriveP(-18);
+    gyroTurn(-37.5);
+    inchDriveP(-17);
+    clampPush(false);
+    wait(1000, msec);
+    Lifter.spin(fwd, 70, pct);
+    Intake.spin(fwd, 100, pct);
+    wait(200, msec);
+    gyroTurn(-84.5);
+    inchDriveP(20);
+    wait(1000, msec);
+    gyroTurn(97);
+    Lifter.stop();
+    Intake.stop();
+    wait(10, msec);
+    inchDriveP(37);
 }
 }
 }
